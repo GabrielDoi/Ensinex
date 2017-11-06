@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", function($scope, funcaoZAPI) {
+angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", function($scope, funcaoZAPI, acessoLiberadoAPI) {
 	console.log("ensinexMainCtrl");
 
   /*
@@ -162,13 +162,16 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         $scope.tabela.push( expValor(_auxF[i]) );
       }
       console.log($scope.tabela);
+      acessoLiberadoAPI.setLiberado();
 //=========================================================================
     }else{
       //caso nao esteja coreto as expresoes 
       if(_correct == 0){
-        console.log("A funcao Z esta Errada !!")
+        console.log("A funcao Z esta Errada !!");
+        acessoLiberadoAPI.blockLiberado();
       }else{
-        console.log("A Restrição "+_correct+" Esta Errada !!")
+        console.log("A Restrição "+_correct+" Esta Errada !!");
+        acessoLiberadoAPI.blockLiberado();
       }
     }
   };// fim gerarTabela
