@@ -69,6 +69,9 @@ angular.module("ensinex").factory("funcaoZAPI", function() {
 	var _getTodoEstado = function() {
 		return _estado;
 	};
+	var _setTodoEstado = function() {
+		_estado = [0];
+	};
 	var _getEstado = function(index) {
 		return _estado[index];
 	};
@@ -97,6 +100,7 @@ angular.module("ensinex").factory("funcaoZAPI", function() {
 		removeVariaveis: _removeVariaveis,
 		addVariaveis: _addVariaveis,
 		getTodoEstado: _getTodoEstado,
+		removeTodoEstado: _setTodoEstado,
 		getEstado: _getEstado,
 		setEstado: _setEstado,
 		getArmazenaEstados: _getArmazenaEstados,

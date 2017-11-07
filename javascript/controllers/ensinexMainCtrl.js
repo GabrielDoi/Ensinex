@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", function($scope, funcaoZAPI, acessoLiberadoAPI) {
+angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", function($scope, funcaoZAPI, acessoLiberadoAPI, $state) {
 	console.log("ensinexMainCtrl");
 
   /*
@@ -87,16 +87,21 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
   };// fim expValor
 
   //funcao que verifica se todas as expressoes estao corretas retorna -1 se estiver tudo certo ou numero da funcao que esta errada
+  //retorna -2 se nao tiver nem uma restricao 
   function expCorrect() {
     var _auxFunc = funcaoZAPI.getTodoEstado(); // array de todas as expresoes em ordem numerica 
     //posicao 0 é da funcao z entao é a unica que estado final é 5 apenas 5
     if(_auxFunc[0] == 5){
-      for(var i=1; i < _auxFunc.length; i++){
-        if(_auxFunc[i] != 7 && _auxFunc[i] != 9){
-          return i;
+      if(_auxFunc.length > 1){
+        for(var i=1; i < _auxFunc.length; i++){
+          if(_auxFunc[i] != 7 && _auxFunc[i] != 9){
+            return i;
+          }
         }
+        return -1;
+      }else{
+        return -2;
       }
-      return -1;
     }else{
       return 0;
     }
@@ -116,7 +121,11 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
     var _correct = expCorrect();
     //verifica se todas as expressoes estao corretas tudo estiver correto tem que ser -1
     if(_correct == -1){
-    //aqui sao variaveis auxiliares uma para restricao outra para gravar o B das restricoes
+      //se estiver tudo certo e acessar essas parte unica forma de não passar para proxima pagina é causando erro então
+      //uma vez estando tudo certo então zera todo os estado para se voltar essa pagina sistema calcular novamente os valores
+      funcaoZAPI.removeTodoEstado();
+
+      //aqui sao variaveis auxiliares uma para restricao outra para gravar o B das restricoes
       var _auxR;
       var _auxB;
 
@@ -162,7 +171,13 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         $scope.tabela.push( expValor(_auxF[i]) );
       }
       console.log($scope.tabela);
+
+      //libera acesso para poder ir para proxima pagiga
       acessoLiberadoAPI.setLiberado();
+
+      //isso faz acionar carregamento da proxima pagina que é passoapasso
+      $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes});
+
 //=========================================================================
     }else{
       //caso nao esteja coreto as expresoes 
@@ -170,8 +185,13 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         console.log("A funcao Z esta Errada !!");
         acessoLiberadoAPI.blockLiberado();
       }else{
-        console.log("A Restrição "+_correct+" Esta Errada !!");
-        acessoLiberadoAPI.blockLiberado();
+        if(_correct == -2){
+          console.log("Não Existe Restrições !!");
+          acessoLiberadoAPI.blockLiberado();
+        }else{
+          console.log("A Restrição "+_correct+" Esta Errada !!");
+          acessoLiberadoAPI.blockLiberado();
+        }
       }
     }
   };// fim gerarTabela
