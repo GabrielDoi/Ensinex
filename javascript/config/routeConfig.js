@@ -20,18 +20,20 @@ angular.module("ensinex").config(function($stateProvider, $urlRouterProvider) {
             funcaoZ: null,
             restricoes: null
         }
-
-		/*
-		resolve: {
-			"acessoLiberado": function(acessoLiberadoAPI, $state) {
-
-				if(!acessoLiberadoAPI.getLiberado()){
-					$state.go("#");
-				}
-
-			}
-		}
-		*/
+	})
+	.state("calculamax", {
+		controller: "calculamaxCtrl",
+		url: "/calculamax",
+		templateUrl: "views/calculaMax.html",
+		redirectTo: (trans) => {
+			return trans.injector().get("acessoLiberadoAPI").getLiberado() == false ? ({state: "#"}) : ({});
+		},
+		params: {
+            tabela: null,
+            qtdVariaveis: null,
+            qtdRestricoes: null,
+            xisEfs: null
+        }
+		
 	});
-
 });
