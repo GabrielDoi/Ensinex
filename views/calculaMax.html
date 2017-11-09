@@ -14,7 +14,11 @@
 				    </tr>
 				  </thead>
 				  <tbody>
-				  	
+				  	<tr ng-repeat="matrizTab in matrizTabela track by $index">
+				  		<td ng-repeat="valorMatrizTab in matrizTab track by $index">
+				  			{{valorMatrizTab}}
+				  		</td>
+				  	</tr>
 				    <!-- <tr>
 				      <th scope="row">1</th>
 				      <td>Mark</td>
@@ -37,7 +41,7 @@
 			  <div class="p-2"><button class="btn btn-primary" ng-click="">Proximo Passo</button></div>
 			</div>
 
-			<button ng-click="calculaMax()">Calcula Max</button>
+			<button ng-click="calcular()">Calcula Max</button>
 
 		</div>
 	</div>

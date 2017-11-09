@@ -7,13 +7,13 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 	//================== variaveis ===============================================================
 
 	//varivel do typo de operacao 0 para Maximizar e 1 para Minimizar
-	$scope.ObjOperacao = $stateParams.operacao;
+	$scope.ObjOperacao = angular.copy($stateParams.operacao);
 
 	//funcao z ja dismembrada tamanho desse array = total de variaveis de decisão
-	$scope.funcaoZ = $stateParams.funcaoZ;
+	$scope.funcaoZ = angular.copy($stateParams.funcaoZ);
 
 	//todas restricoes
-	$scope.restricoes = $stateParams.restricoes;
+	$scope.restricoes = angular.copy($stateParams.restricoes);
 
 	//variavel que vai armazenar TABELA em forma de matriz não vou usar ela no scope
 	//variavel estatica desse documento
@@ -77,6 +77,9 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 			//quer dizer que estamos adicionado uma nova linha na matriz
 			_tabela.push([]);
 
+			//adiciona o nome da funcao no primeiro elemento da matriz tabela
+			_tabela[i].push("F"+(i+1));
+
 			//segundo for é para as colunas 
 			//são formadas seguindo total de variveis de decissão + total de restricoes para forma os F
 			//como total de variaveis de decisão é o tamanho do array func entao
@@ -125,6 +128,9 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 		//nessa parte vou adicionar minha funcao Z na ultima linha da tabela matriz 
 		//adiciono a ultima linha para ser os valores da minha funcao Z
 		_tabela.push([]);
+
+		//adiciona o Z da funcao no primeiro elemento da matriz tabela
+		_tabela[_tabela.length-1].push("Z");
 
 		//esse for é para toda a linha incluindo o ultimo valor que é o B
 		//por isso vai toda restricao + todas variaveis + 1 que é o B

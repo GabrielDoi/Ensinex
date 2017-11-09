@@ -4,36 +4,49 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 	//bloqueio o acesso caso usuario volte a pagina ira ter que colocar os valores denovo
 	acessoLiberadoAPI.blockLiberado();
    
+
+   //=========variaveis estaticas ========================================================
   	//montagem do quadro 
 	// var tabela = [ ["f1",1,0,1,0,0,4],
 	// 			  	  ["f2",0,1,0,1,0,6 ],
 	// 			  	  ["f3",3,2,0,0,1,18 ],
 	// 			  	  ["z",-3,-5,0,0,0,0 ]
 	// 				];
-	var tabela = $stateParams.tabela;
+	var tabela = angular.copy($stateParams.tabela);
 			//console.log($stateParams.tabela)
 	//var qtdeVariaveis = 2;
-	var qtdeVariaveis = $stateParams.qtdVariaveis;
+	var qtdeVariaveis = angular.copy($stateParams.qtdVariaveis);
 			//console.log($stateParams.qtdVariaveis)
 	//var qtdeRestricoes = 3;
-	var qtdeRestricoes = $stateParams.qtdRestricoes;
+	var qtdeRestricoes = angular.copy($stateParams.qtdRestricoes);
 			//console.log($stateParams.qtdRestricoes)
 
 
 	var qtdeLinhas = qtdeRestricoes+1;
 	var qtdeColunas = qtdeRestricoes+qtdeVariaveis+2;
 
+	//======================= fim variaveis estaticas =======================================
 
 	//=========== variaveis do scope ========================================================
 
 	//$scope.nXisEfs = ["BASE", "x1", "x2", "x3", "F1", "F2", "F3", "F4", "B"];
-	$scope.nXisEfs = $stateParams.xisEfs;
+	$scope.nXisEfs = angular.copy($stateParams.xisEfs);
+
+	//variavel para armazenar a tabela no scope
+	$scope.matrizTabela = angular.copy($stateParams.tabela);
 
 	//=========== fim da variaveis do scope ==================================================
-			
-			
-	$scope.calculaMax = function (){
-	
+
+	//======= funções estaticas =============================================================
+
+	//funcao para atualizar os valores da matriz 
+	function updateMatrizTabela(novoEstado){
+		$scope.matrizTabela = angular.copy(novoEstado);
+	};//fim do update
+
+	//função que calcula o MAX
+	function calculaMax() {
+
 		var entra; //posição de quem entra
 		var menor = 0;
 		
@@ -68,7 +81,7 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 	
 
 		//substituindo quem entra/sai
-		tabela[sai][0] = "x"+entra;
+		tabela[sai][0] = $scope.nXisEfs[entra] //"x"+entra;
 		
 		
 		
@@ -115,15 +128,27 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 				
 		}
 		if(continua){
-			$scope.calculaMax();
+			calculaMax();
 		}
 		else{
 			//imprime resultado
 			console.log(tabela);
+			updateMatrizTabela(tabela);
 			for(var i=0; i< qtdeLinhas; i++){
 				console.log(tabela[i][0]+" : "+tabela[i][qtdeColunas-1]);
 			}
 		}
+	}; // fim da funcao que calcula max
+
+	//=============fim das funções estaticas ===============================================
+			
+	//================== funcoes de scope ====================================================
+
+	$scope.calcular = function (){
 	
-	}
+		calculaMax();
+	
+	};
+
+	//========== fim das funcoes de scope ===============================================
 }]);
