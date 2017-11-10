@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", "$stateParams", function($scope, funcaoZAPI, acessoLiberadoAPI, $state, $stateParams) {
+angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", "$stateParams", "vetorList", function($scope, funcaoZAPI, acessoLiberadoAPI, $state, $stateParams, vetorList) {
 	console.log("calculamaxCtrl");
 	
 	//bloqueio o acesso caso usuario volte a pagina ira ter que colocar os valores denovo
@@ -25,6 +25,14 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 	var qtdeLinhas = qtdeRestricoes+1;
 	var qtdeColunas = qtdeRestricoes+qtdeVariaveis+2;
 
+
+	//estrutura de dados para fazer passo a passo
+	//vetorList é um serviço que retorna valores e funcoes de controle para gerenciar os 
+	//	proximo passo
+	//	passo anterior
+	var listaDeEstados = vetorList.criarVetorList();
+
+
 	//======================= fim variaveis estaticas =======================================
 
 	//=========== variaveis do scope ========================================================
@@ -34,6 +42,9 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 
 	//variavel para armazenar a tabela no scope
 	$scope.matrizTabela = angular.copy($stateParams.tabela);
+
+	//aqui estou gravando esse estado na minha lista de estados porque ele é o primeiro
+	listaDeEstados.addEstado(angular.copy($stateParams.tabela));
 
 	//=========== fim da variaveis do scope ==================================================
 
@@ -50,6 +61,10 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 		var entra; //posição de quem entra
 		var menor = 0;
 		
+
+		//aqui ele verifica quem é o menor na funcao Z 
+		//e adiciona o xis da coluna na variavel entra 
+		//e o valor da funcao Z na variavel menor
 		for(var i=1; i <= qtdeVariaveis ; i++){
 			if (tabela[qtdeRestricoes][i] < menor){
 				entra = i;
@@ -97,6 +112,8 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 			}
 			
 		}
+
+		listaDeEstados.addEstado(angular.copy(tabela));
 		
 		// 1ª iteração - 2ª operação
 		
@@ -109,14 +126,10 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 				for(var j=1; j<qtdeColunas; j++){
 					tabela[i][j] = tabela[sai][j]*operador + tabela[i][j];
 				}
-				
-				
-			
 			}
-			
-		
-		
 		}
+
+		listaDeEstados.addEstado(angular.copy(tabela));
 		
 		//verifica se tem proxima iteração
 		var continua=false;
@@ -126,7 +139,10 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 				break;
 			}
 				
-		}
+		};
+
+		//listaDeEstados.addEstado(angular.copy(tabela));
+
 		if(continua){
 			calculaMax();
 		}
@@ -134,6 +150,8 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "funcaoZAPI", 
 			//imprime resultado
 			console.log(tabela);
 			updateMatrizTabela(tabela);
+			console.log(listaDeEstados);
+
 			for(var i=0; i< qtdeLinhas; i++){
 				console.log(tabela[i][0]+" : "+tabela[i][qtdeColunas-1]);
 			}
