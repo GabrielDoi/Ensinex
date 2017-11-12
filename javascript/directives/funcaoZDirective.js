@@ -186,6 +186,8 @@ angular.module("ensinex").directive("funcaoZ", ["funcaoZAPI", function(funcaoZAP
 								//console.log(funcaoZAPI.getArmazenaEstados(scope.$eval(attrs.funcIndex)));
 
 								//console.log(scope.$eval(attrs.funcIndex))
+
+								//console.log(funcaoZAPI.getTodoEstado())
 							}
 						}
 					}

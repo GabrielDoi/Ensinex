@@ -3,42 +3,34 @@
 		<div class="container">
 			<h1 class="logo">Ensinex</h1>
 			<p class="lead">
-			  Calcular Max (console)
+			  Calcular Max {{matrizTabela.iteracao}}º Iteração
 			</p>
 
 			<table class="table table-bordered table-dark" style="border-color: black;">
 				<thead>
 				    <tr>
-				      <th scope="col" ng-repeat="xEf in nXisEfs">{{xEf}}</th>
+				      <th scope="col" ng-repeat="xEf in nXisEfs" ng-class="{'quem-entra': matrizTabela.entra == $index, 'trans-matriz': matrizTabela.transMatriz == $index}">{{xEf}}</th>
 				      
 				    </tr>
 				  </thead>
 				  <tbody>
-				  	<tr ng-repeat="matrizTab in matrizTabela track by $index">
-				  		<td ng-repeat="valorMatrizTab in matrizTab track by $index">
+				  	<tr ng-repeat="matrizTab in matrizTabela.estado track by $index">
+				  		<td ng-repeat="valorMatrizTab in matrizTab track by $index" ng-class="{'quem-sai': matrizTabela.sai == $parent.$index && $index == 0, 'entra-base': matrizTabela.entraBase == $parent.$index && $index == 0, 'trans-matriz': matrizTabela.transMatriz == $index, 'pivo': matrizTabela.pivo == $parent.$index, 'valor-pivo': matrizTabela.transMatriz == $index && matrizTabela.pivo == $parent.$index, 'operacao-um': matrizTabela.opUm == $parent.$index, 'deixar-nulo': matrizTabela.deixarNulo == $index, 'operacao-dois': matrizTabela.opDois == $parent.$index, 'valor-operador': matrizTabela.opDois == $parent.$index && matrizTabela.opDoisColuna == $index, 'resultado-op-dois': matrizTabela.resulOpDois == $parent.$index, 'condicao-parada': matrizTabela.condicaoParadaL == $parent.$index && matrizTabela.condicaoParadaC == $index, 'condicao-stop': matrizTabela.condicaoStop == $parent.$index}">
 				  			{{valorMatrizTab}}
 				  		</td>
 				  	</tr>
-				    <!-- <tr>
-				      <th scope="row">1</th>
-				      <td>Mark</td>
-				      <td>Otto</td>
-				      <td>@mdo</td>
-				    </tr>
-				    <tr>
-				      <th scope="row">2</th>
-				      <td>Mark</td>
-				      <td>Otto</td>
-				      <td>@TwBootstrap</td>
-				    </tr> -->
-				    
 				  </tbody>
 			</table>
 
+			<blockquote class="blockquote">
+			  <p class="mb-0">Passo a Passo:</p>
+			  <p class="lead">{{matrizTabela.mensagem}}</p>
+			</blockquote>
+
 			<div class="d-flex justify-content-around">
-			  <div class="p-2"><button class="btn btn-warning" ng-click="">Passo Anterior</button></div>
+			  <div class="p-2"><button class="btn btn-warning" ng-click="passoAnterior()">Passo Anterior</button></div>
 			  <div class="p-2"><button class="btn btn-danger" ui-sref="#">Calcelar</button></div>
-			  <div class="p-2"><button class="btn btn-primary" ng-click="">Proximo Passo</button></div>
+			  <div class="p-2"><button class="btn btn-primary" ng-click="proximoPasso()">Proximo Passo</button></div>
 			</div>
 
 			<button ng-click="calcular()">Calcula Max</button>

@@ -112,7 +112,13 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 					//verifico se i é igual ao valores de j retirando os valores da funcao 
 					//para adicionar os valores depois que acabar os valores da funcao
 					if(i == j - func.length){
-						_tabela[i].push(1);
+						//verifico o operador se o operador for > valor das variaveis de folga tem que ser -1 
+						//se nao for o valor das variaveis são positivas 1
+						if(restri[i][restri[i].length -1].operador == ">") {
+							_tabela[i].push(-1);
+						}else{
+							_tabela[i].push(1);
+						}
 					}else{
 						_tabela[i].push(0);
 					}

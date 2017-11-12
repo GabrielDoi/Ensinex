@@ -27,6 +27,8 @@ angular.module("ensinex").factory("vetorList", function() {
 					if(this.estadoAtual == this.todosEstados.length -1){
 						alert("Já está no ultimo Passo!!");
 						console.log("Já está no ultimo Passo!!");
+						//retorna a matriz do proximo estado
+						return this.todosEstados[this.estadoAtual];
 					}else{
 						//passa para o proximo estado
 						this.estadoAtual++;
@@ -44,6 +46,8 @@ angular.module("ensinex").factory("vetorList", function() {
 				if(this.estadoAtual == 0){
 					alert("Já está no primeiro Passo!!");
 					console.log("Já está no primeiro Passo!!");
+					//retorna a matriz do proximo estado
+					return this.todosEstados[this.estadoAtual];
 				}else{
 					//retorna o estado 
 					this.estadoAtual--;
@@ -54,8 +58,8 @@ angular.module("ensinex").factory("vetorList", function() {
 			},//fim da funcao estadoAnterior
 
 			//funcao que adidiona um novo valor ao todosEstados
-			addEstado: function(estado) {
-				this.todosEstados.push(estado);
+			addEstado: function(est, msg, ent, sai, entBase, transMatr, pv, op, dexNulo, opD, opDC, rOPD, cPL, cPC, cStop, itera) {
+				this.todosEstados.push({estado: est, mensagem: msg, entra: ent, sai: sai, entraBase: entBase, transMatriz: transMatr, pivo: pv, opUm: op, deixarNulo: dexNulo, opDois: opD, opDoisColuna: opDC, resulOpDois: rOPD, condicaoParadaL: cPL, condicaoParadaC: cPC, condicaoStop: cStop, iteracao: itera});
 			}//fim da funcao addEstado
 		}
 	};

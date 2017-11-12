@@ -46,12 +46,17 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
   //variavel para armazenar as restricoes em forma de objeto com valor e xis e o b
   $scope.tabelaRestricoes = [];
 
-  //============================= fim das vriaveis ====================================================
+  //--------------------- estaticas -----------------------------------------------------------
+
+  //variavel de controle para erros
+  var erro = 0;
+
+  //============================= fim das variaveis ====================================================
 
   //==================== funcoes estaticas ======================================================
   //funcao que recebe uma expresao do tipo 5x1 onde tem numero seguido de x seguido do index do x que é outro numero
   //retorna o valor numerico e o x como string
-  function expValor(exp) {
+  function expValor(op, exp) {
 
     //variavel para armazer valor antes do x e o x e seu index
     var objValor = {
@@ -83,6 +88,20 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
     //adiciono os xis no objeto
     objValor.xis = exp.substring(_auxDoX);
 
+    //se for true porque é restricoes
+    //se for false é porque é a funcao z entao nao faz isso
+    if(op) {
+
+      //vou percorrer todo funcao verificando se tem valor igual o meus xis
+      for(var i=0; i< $scope.tabela.length; i++){
+        if(objValor.xis == $scope.tabela[i].xis){
+          return objValor;
+        }
+      }
+      //isso é para indicar que nao encontrei nem um valor igual meu xis então quer dizer que tem um erro
+      return -1;
+    }//fim do if
+
     return objValor;
   };// fim expValor
 
@@ -112,6 +131,9 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
   //gerarTabela passa para proxima etapa reunindo as informacoes da string e convertendo para tebela 
   $scope.gerarTabela = function(obj, fun, restri) {
+    //retorna variavel estado padrão sem erros
+    erro = 0;
+    
     //aqui estou zerando as variaveis
     $scope.tabela = [];
     $scope.tabelaRestricoes = [];
@@ -121,13 +143,24 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
     var _correct = expCorrect();
     //verifica se todas as expressoes estao corretas tudo estiver correto tem que ser -1
     if(_correct == -1){
-      //se estiver tudo certo e acessar essas parte unica forma de não passar para proxima pagina é causando erro então
-      //uma vez estando tudo certo então zera todo os estado para se voltar essa pagina sistema calcular novamente os valores
-      funcaoZAPI.removeTodoEstado();
 
+      //reparte a string da funcao em um array dos elemento exemplo 12x2 isso é um elemento
+      var _auxF = fun.match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+/gi);
+
+      //esse for é para o array dos elemento de cima
+      for(var i=0; i < _auxF.length; i++){
+        //adiciona na variavel um objeto contendo valor e o xis de cada elemento
+        $scope.tabela.push( expValor(false, _auxF[i]) );
+      }
+      console.log($scope.tabela);
+//=================== ate aqui é parte da funcao Z daki para baixo é das restricoes====================================
+      
       //aqui sao variaveis auxiliares uma para restricao outra para gravar o B das restricoes
       var _auxR;
       var _auxB;
+
+      //variavel de retorno da funcao expValor caso retorne -1 tratar como erro
+      var retornoExpValor;
 
       //nesse for percorro as casas do meu array de restricoes em outras palavras
       //vou em cada restricao existente 1,2,3... restricoes e optenho sua expressao
@@ -147,8 +180,17 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         
         //esse for é para cada restricao
         for(var j=0; j < _auxR.length -1; j++){
-          //adiciono restricao como objeto com valor e xis
-          $scope.tabelaRestricoes[i].push( expValor(_auxR[j]) );
+
+          retornoExpValor = expValor(true, _auxR[j]);
+
+          if(retornoExpValor == -1) {
+            alert("Existe nome de Variavel X nas restrições que são diferentes da Função !!!");
+            console.log("Existe nome de Variavel X nas restrições que são diferentes da Função !!!");
+            erro = 1;
+          }else{
+            //adiciono restricao como objeto com valor e xis
+            $scope.tabelaRestricoes[i].push( retornoExpValor );
+          }
         }
 
         //ultimo valor é sempre os operadores > < = seguidos de numeros
@@ -161,23 +203,18 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         $scope.tabelaRestricoes[i].push(_auxB);
       }
       console.log($scope.tabelaRestricoes)
-//=================== ate aqui é parte das restricoes daki para baixo é da funcao Z====================================
-      //reparte a string da funcao em um array dos elemento exemplo 12x2 isso é um elemento
-      var _auxF = fun.match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+/gi);
 
-      //esse for é para o array dos elemento de cima
-      for(var i=0; i < _auxF.length; i++){
-        //adiciona na variavel um objeto contendo valor e o xis de cada elemento
-        $scope.tabela.push( expValor(_auxF[i]) );
+      if(erro != 1) {
+        //se estiver tudo certo e acessar essas parte unica forma de não passar para proxima pagina é causando erro então
+        //uma vez estando tudo certo então zera todo os estado para se voltar essa pagina sistema calcular novamente os valores
+        funcaoZAPI.removeTodoEstado();
+
+        //libera acesso para poder ir para proxima pagiga
+        acessoLiberadoAPI.setLiberado();
+
+        //isso faz acionar carregamento da proxima pagina que é passoapasso
+        $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes});
       }
-      console.log($scope.tabela);
-
-      //libera acesso para poder ir para proxima pagiga
-      acessoLiberadoAPI.setLiberado();
-
-      //isso faz acionar carregamento da proxima pagina que é passoapasso
-      $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes});
-
 //=========================================================================
     }else{
       //caso nao esteja coreto as expresoes 

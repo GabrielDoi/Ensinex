@@ -39,3 +39,55 @@
 	background-color: #ef5353;
 	cursor: pointer;
 }
+
+.quem-entra {
+	background-color: orange;
+}
+
+.quem-sai {
+	background-color: red;
+}
+
+.entra-base {
+	background-color: green;
+}
+
+.trans-matriz {
+	color: red;
+}
+
+.pivo {
+	color: red;
+}
+
+.valor-pivo {
+	background-color: yellow;
+}
+
+.operacao-um {
+	color: red;
+}
+
+.deixar-nulo {
+	color: red;
+}
+
+.operacao-dois {
+	background-color: #ad7d00;
+}
+
+.valor-operador {
+	color: red;
+}
+
+.resultado-op-dois {
+	color: red;
+}
+
+.condicao-parada {
+	background-color: orange;
+}
+
+.condicao-stop {
+	color: red;
+}
