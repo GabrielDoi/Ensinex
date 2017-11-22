@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLiberadoAPI", "$stateParams", "$state", function($scope, acessoLiberadoAPI, $stateParams, $state) {
+angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLiberadoAPI", "$stateParams", "$state", "calculaMaxAPI", function($scope, acessoLiberadoAPI, $stateParams, $state, calculaMaxAPI) {
 	console.log("passoApassoCtrl");
 	
 	//bloqueio o acesso caso usuario volte a pagina ira ter que colocar os valores denovo
@@ -23,6 +23,8 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 
 	//variavel armazena os valores dos xis e fs para montar a tabela
 	var _xisEfs = [];
+
+	var qtdIter = angular.copy($stateParams.qtdIteracao)
 
 	//================== fim das variaveis ===============================================================
 
@@ -163,8 +165,12 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 			//libera acesso para poder ir para proxima pagiga
       		acessoLiberadoAPI.setLiberado();
 
+      		//calcular Funcao MAX aqui parametros tabela, qtdVariaveis, qtdRestricoes, qtdIteracao, xisEfs
+      		var _resultado = calculaMaxAPI.calcular(_tabela, func.length, restri.length, qtdIter, _xisEfs);
+
 			//isso faz acionar carregamento da proxima pagina que é calculamax
-			$state.go("calculamax", {tabela: _tabela, qtdVariaveis: func.length, qtdRestricoes: restri.length, xisEfs: _xisEfs});
+			//{tabela: _tabela, qtdVariaveis: func.length, qtdRestricoes: restri.length, xisEfs: _xisEfs, qtdIteracao: qtdIter}
+			$state.go("calculamax", {resultadoMax: _resultado, xisEfs: _xisEfs});
 		}else{
 			if(obj == 1){
 				//se 1 é porque é MINIMIZAR
@@ -174,7 +180,11 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 				console.log("Objetivo max ou min fora dos parametros");
 			}
 		}
-	};
+	};//fim tabela dos calculos
+
+	$scope.solucaoDireta = function() {
+		
+	};// fim solucao direta
 
 	//================== fim funcoes do scope ===============================================================
 

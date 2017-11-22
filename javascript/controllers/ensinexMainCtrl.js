@@ -130,7 +130,7 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
   //======== funcoes do scope =======================================================================
 
   //gerarTabela passa para proxima etapa reunindo as informacoes da string e convertendo para tebela 
-  $scope.gerarTabela = function(obj, fun, restri) {
+  $scope.gerarTabela = function(obj, fun, restri, qdtMaxIter) {
     //retorna variavel estado padrão sem erros
     erro = 0;
     
@@ -213,7 +213,7 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         acessoLiberadoAPI.setLiberado();
 
         //isso faz acionar carregamento da proxima pagina que é passoapasso
-        $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes});
+        $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes, qtdIteracao: qdtMaxIter});
       }
 //=========================================================================
     }else{

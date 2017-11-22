@@ -18,7 +18,8 @@ angular.module("ensinex").config(function($stateProvider, $urlRouterProvider) {
 		params: {
             operacao: null,
             funcaoZ: null,
-            restricoes: null
+            restricoes: null,
+            qtdIteracao: null
         }
 	})
 	.state("calculamax", {
@@ -29,9 +30,7 @@ angular.module("ensinex").config(function($stateProvider, $urlRouterProvider) {
 			return trans.injector().get("acessoLiberadoAPI").getLiberado() == false ? ({state: "#"}) : ({});
 		},
 		params: {
-            tabela: null,
-            qtdVariaveis: null,
-            qtdRestricoes: null,
+            resultadoMax: null,
             xisEfs: null
         }
 		

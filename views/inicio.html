@@ -24,9 +24,12 @@
       <div align="center" style="margin-top: 2px;">
         <p class="adicionar-regra" ng-click="adicionarRegra(restricoes)">Adiconar Restrições<i class="fa fa-angle-down fa-3x " aria-hidden="true"></i></p>
       </div>
+
+    
+      <input class="form-control" type="number" placeholder="Digite Quantidade Maxima de Iterações" style="margin-top: 20px;" ng-model="qdtMaxIteracao" required>
       
 
-      <button type="button" class="btn btn-primary my-btn" ng-click="gerarTabela(escolhaObjOperacao.value, funcaoZ, restricoes)">Proximo Passo</button>
+      <button type="button" class="btn btn-primary my-btn" ng-click="gerarTabela(escolhaObjOperacao.value, funcaoZ, restricoes, qdtMaxIteracao)">Proximo Passo</button>
 
       <!-- <button type="button" class="btn btn-primary my-btn" ui-sref="passoapasso({operacao: escolhaObjOperacao.value, funcaoZ: tabela, restricoes: tabelaRestricoes})">Solução Passo a Passo</button> -->
 
