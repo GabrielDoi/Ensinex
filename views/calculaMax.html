@@ -33,6 +33,17 @@
 			  <div class="p-2"><button class="btn btn-primary" ng-click="proximoPasso()">Proximo Passo</button></div>
 			</div>
 
+			<blockquote class="blockquote">
+				<div ng-if="estaUltimoEstado">
+					<p class="mb-1">Solução Final:</p>
+					<p class="mb-0">Variaveis Basicas</p>
+					<p class="lead" ng-repeat="basic in todasSolucaoFinal.basica track by $index">{{basic}}</p>
+
+					<p class="mb-0">Variaveis Não Basicas</p>
+					<p class="lead" ng-repeat="nBasic in todasSolucaoFinal.naoBasica track by $index">{{nBasic}}</p>
+				</div>
+			</blockquote>
+
 		</div>
 	</div>
 </div>

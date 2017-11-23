@@ -68,7 +68,7 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 		}
 	};
 
-	$scope.tabelaDosCalculos = function(obj, func, restri) {
+	$scope.tabelaDosCalculos = function(obj, func, restri, direta) {
 		//OBJ vou usar depois para verificar se é maximizar ou minimozar 
 		//ate agora vamos fazer so o max
 
@@ -168,9 +168,13 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
       		//calcular Funcao MAX aqui parametros tabela, qtdVariaveis, qtdRestricoes, qtdIteracao, xisEfs
       		var _resultado = calculaMaxAPI.calcular(_tabela, func.length, restri.length, qtdIter, _xisEfs);
 
-			//isso faz acionar carregamento da proxima pagina que é calculamax
-			//{tabela: _tabela, qtdVariaveis: func.length, qtdRestricoes: restri.length, xisEfs: _xisEfs, qtdIteracao: qtdIter}
-			$state.go("calculamax", {resultadoMax: _resultado, xisEfs: _xisEfs});
+      		if(direta){
+      			return _resultado;
+      		}else {
+				//isso faz acionar carregamento da proxima pagina que é calculamax
+				//{tabela: _tabela, qtdVariaveis: func.length, qtdRestricoes: restri.length, xisEfs: _xisEfs, qtdIteracao: qtdIter}
+				$state.go("calculamax", {resultadoMax: _resultado, xisEfs: _xisEfs});
+			}
 		}else{
 			if(obj == 1){
 				//se 1 é porque é MINIMIZAR
@@ -182,8 +186,17 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 		}
 	};//fim tabela dos calculos
 
-	$scope.solucaoDireta = function() {
-		
+	$scope.solucaoDireta = function(obj, func, restri) {
+
+		var resul = $scope.tabelaDosCalculos(obj, func, restri, true);
+
+		//variavel para mostrar solucao final 
+		var todasSolucaoFinal = {
+			basica: resul.solucaoBasica,
+			naoBasica: resul.solucaoNaoBasica
+		}
+
+		$state.go("solucaoDireta", {resultado: todasSolucaoFinal});
 	};// fim solucao direta
 
 	//================== fim funcoes do scope ===============================================================

@@ -33,8 +33,14 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "acessoLiberad
 	//vetorList é um serviço que retorna valores e funcoes de controle para gerenciar os 
 	//	proximo passo
 	//	passo anterior   		//tabela, qtdVariaveis, qtdRestricoes, qtdIteracao, xisEfs  
-	var listaDeEstados = angular.copy($stateParams.resultadoMax) //calculaMaxAPI.calcular(angular.copy($stateParams.tabela),angular.copy($stateParams.qtdVariaveis),angular.copy($stateParams.qtdRestricoes),angular.copy($stateParams.qtdIteracao), angular.copy($stateParams.xisEfs));
+	var listaDeEstados = angular.copy($stateParams.resultadoMax.listaDeTodosEstados) //calculaMaxAPI.calcular(angular.copy($stateParams.tabela),angular.copy($stateParams.qtdVariaveis),angular.copy($stateParams.qtdRestricoes),angular.copy($stateParams.qtdIteracao), angular.copy($stateParams.xisEfs));
 	//vetorList.criarVetorList(); //exclui dependencia vetorList
+
+	//variavel para mostrar solucao final 
+	$scope.todasSolucaoFinal = {
+		basica: angular.copy($stateParams.resultadoMax.solucaoBasica),
+		naoBasica: angular.copy($stateParams.resultadoMax.solucaoNaoBasica)
+	}
 
 	//aqui estou gravando esse estado na minha lista de estados porque ele é o primeiro
 	//listaDeEstados.addEstado(angular.copy($stateParams.tabela), "Este é o Estado Inicial, Respresentação da Tabela", -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0);
@@ -52,6 +58,9 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "acessoLiberad
 	//variavel para armazenar a tabela no scope
 	$scope.matrizTabela = listaDeEstados.todosEstados[0]; //{estado: angular.copy($stateParams.tabela), mensagem: "Este é o Estado Inicial, Respresentação da Tabela", entra: -1, sai: -1, entraBase: -1, transMatriz: -1, pivo: -1, opUm: -1, deixarNulo: -1, opDois: -1, opDoisColuna: -1, resulOpdois: -1, condicaoParadaL: -1, condicaoParadaC: -1, condicaoStop: -1, iteracao: 0};
 
+	//variavel para armazenar se esta no ultimo estado para solucao final
+	$scope.estaUltimoEstado = false;
+
 	//=========== fim da variaveis do scope ==================================================
 
 	//======= funções estaticas =============================================================
@@ -59,6 +68,8 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "acessoLiberad
 	//funcao para atualizar os valores da matriz 
 	function updateMatrizTabela(novoEstado){
 		$scope.matrizTabela = angular.copy(novoEstado);
+		$scope.estaUltimoEstado = listaDeEstados.ultimoEstado();
+		console.log(listaDeEstados.ultimoEstado())
 	};//fim do update
 
 	//função que calcula o MAX

@@ -34,5 +34,13 @@ angular.module("ensinex").config(function($stateProvider, $urlRouterProvider) {
             xisEfs: null
         }
 		
+	})
+	.state("solucaoDireta", {
+		controller: "solucaoDiretaCtrl",
+		url: "/solucaoDireta",
+		templateUrl: "views/solucaoDireta.html",
+		params: {
+			resultado: null
+		}
 	});
 });

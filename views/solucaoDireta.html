@@ -1,0 +1,26 @@
+<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+	<div class="jumbotron jumbotron-fluid" style="padding-top: 5px;">
+		<div class="container">
+			<h1 class="logo">Ensinex</h1>
+			<p class="lead">
+			  Solução Direta
+
+			  <blockquote class="blockquote">
+					<p class="mb-1">Solução Final:</p>
+					<p class="mb-0">Variaveis Basicas</p>
+					<p class="lead" ng-repeat="basic in todasSolucaoFinal.basica track by $index">{{basic}}</p>
+
+					<p class="mb-0">Variaveis Não Basicas</p>
+					<p class="lead" ng-repeat="nBasic in todasSolucaoFinal.naoBasica track by $index">{{nBasic}}</p>
+			</blockquote>
+			</p>
+
+			<div class="d-flex justify-content-around">
+			  <div class="p-2"><button class="btn btn-danger" ng-click="solucaoDireta(ObjOperacao, funcaoZ, restricoes)">Voltar</button></div>
+			  <div class="p-2"></div>
+			  <div class="p-2"><button class="btn btn-info" ui-sref="#">Pagina Inicial</button></div>
+			</div>
+
+		</div>
+	</div>
+</div>

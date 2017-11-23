@@ -3,15 +3,30 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 		api responsavel por calcular Max retorna vetorList
 	*/
 
-	//criando uma novo vetor
-	var listaDeEstados = vetorList.criarVetorList();
+	// //criando uma novo vetor
+	// var listaDeEstados = vetorList.criarVetorList();
 
-	//variavel que ira calcular quantas iteracoes foram feitas
-	var iteracao = 1;
+	// //variavel de armazenamento para soluções finais
+	// var solucaoFinalBasica = [];
+	// //nao basica
+	// var solucaoFinalNaoBasica = [];
+
+	// //variavel que ira calcular quantas iteracoes foram feitas
+	// var iteracao = 1;
 
 	//função que calcula o MAX
 	var _calculaMax = function(tabela, qtdeVariaveis, qtdeRestricoes, qtdMaxIteracao, nXisEfs) {
+		//criando uma novo vetor
+		var listaDeEstados = vetorList.criarVetorList();
 
+		//variavel de armazenamento para soluções finais
+		var solucaoFinalBasica = [];
+		//nao basica
+		var solucaoFinalNaoBasica = [];
+
+		//variavel que ira calcular quantas iteracoes foram feitas
+		var iteracao = 1;
+		
 		var qtdeLinhas = qtdeRestricoes+1;
 		var qtdeColunas = qtdeRestricoes+qtdeVariaveis+2;
 
@@ -127,12 +142,15 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 			};
 
 			//listaDeEstados.addEstado(angular.copy(tabela), "nada 3", -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, iteracao);
-
-			if(continua){
+			
+			if(continua && qtdMaxIteracao > 1){
+				
+				qtdMaxIteracao--;
 				iteracao++;
 				calculaMax();
 			}
 			else{
+
 				//adicionando estado que ja nao tem mais variavel negativa na funao z entao para o algoritmo
 				listaDeEstados.addEstado(angular.copy(tabela), "Condição de Parada, Não existe valor negativo na função Z entao esse é o ultimo passo !!", -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, qtdeLinhas-1, iteracao);
 				
@@ -144,14 +162,37 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 				//updateMatrizTabela(tabela);
 				console.log(listaDeEstados);
 
+				console.log("variaveis Basicas")
 				for(var i=0; i< qtdeLinhas; i++){
 					console.log(tabela[i][0]+" : "+tabela[i][qtdeColunas-1]);
+					solucaoFinalBasica.push(tabela[i][0]+" : "+tabela[i][qtdeColunas-1])
 				}
+
+				console.log("variaveis Não Basicas")
+				for(var i=1, j=0; i< nXisEfs.length-1; i++){
+					var achou = 0;
+					for( ;j < qtdeLinhas; j++) {
+						if(nXisEfs[i] == tabela[j][0]){
+							achou = 1;
+							//console.log(nXisEfs[i]+" : 0")
+						}
+					}
+					if(achou == 0){
+						console.log(nXisEfs[i]+" : 0")
+						solucaoFinalNaoBasica.push(nXisEfs[i]+" : 0")
+					}
+				}
+
+				qtdMaxIteracao = 0;
 			}
 		}
 		calculaMax();
 
-		return listaDeEstados;
+		return {
+			listaDeTodosEstados: listaDeEstados,
+			solucaoBasica: solucaoFinalBasica,
+			solucaoNaoBasica: solucaoFinalNaoBasica
+		};
 	}; // fim da funcao que calcula max
 
 	return {

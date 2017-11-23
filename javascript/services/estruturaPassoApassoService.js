@@ -60,7 +60,21 @@ angular.module("ensinex").factory("vetorList", function() {
 			//funcao que adidiona um novo valor ao todosEstados
 			addEstado: function(est, msg, ent, sai, entBase, transMatr, pv, op, dexNulo, opD, opDC, rOPD, cPL, cPC, cStop, itera) {
 				this.todosEstados.push({estado: est, mensagem: msg, entra: ent, sai: sai, entraBase: entBase, transMatriz: transMatr, pivo: pv, opUm: op, deixarNulo: dexNulo, opDois: opD, opDoisColuna: opDC, resulOpDois: rOPD, condicaoParadaL: cPL, condicaoParadaC: cPC, condicaoStop: cStop, iteracao: itera});
-			}//fim da funcao addEstado
+			},//fim da funcao addEstado
+
+			//verifica se esta no ultimo estado se sim retorna true se nao retorna false
+			ultimoEstado: function() {
+				if(this.estadoAtual == this.todosEstados.length-1) {
+					return true;
+				}else{
+					return false;
+				}
+			},//fim ultimo estado
+
+			//novo estado 
+			novoEstado: function() {
+				this.todosEstados = [];
+			}//fim novo estado
 		}
 	};
 
