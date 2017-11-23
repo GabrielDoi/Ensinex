@@ -69,7 +69,6 @@ angular.module("ensinex").controller("calculamaxCtrl", ["$scope", "acessoLiberad
 	function updateMatrizTabela(novoEstado){
 		$scope.matrizTabela = angular.copy(novoEstado);
 		$scope.estaUltimoEstado = listaDeEstados.ultimoEstado();
-		console.log(listaDeEstados.ultimoEstado())
 	};//fim do update
 
 	//função que calcula o MAX

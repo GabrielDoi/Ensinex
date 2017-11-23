@@ -39,6 +39,9 @@ angular.module("ensinex").config(function($stateProvider, $urlRouterProvider) {
 		controller: "solucaoDiretaCtrl",
 		url: "/solucaoDireta",
 		templateUrl: "views/solucaoDireta.html",
+		redirectTo: (trans) => {
+			return trans.injector().get("acessoLiberadoAPI").getLiberado() == false ? ({state: "#"}) : ({});
+		},
 		params: {
 			resultado: null
 		}

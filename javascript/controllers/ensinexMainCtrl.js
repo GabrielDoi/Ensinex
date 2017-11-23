@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", function($scope, funcaoZAPI, acessoLiberadoAPI, $state) {
+angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", "gravarFuncaoAPI", function($scope, funcaoZAPI, acessoLiberadoAPI, $state, gravarFuncaoAPI) {
 	console.log("ensinexMainCtrl");
 
   /*
@@ -212,6 +212,9 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         //libera acesso para poder ir para proxima pagiga
         acessoLiberadoAPI.setLiberado();
 
+        //grava toda a funcao suas restricoes e variaveisauxiliares
+        gravarFuncaoAPI.setDados($scope.escolhaObjOperacao.value, $scope.tabela, $scope.tabelaRestricoes, qdtMaxIter);
+        console.log(gravarFuncaoAPI.getDados());
         //isso faz acionar carregamento da proxima pagina que é passoapasso
         $state.go("passoapasso",{operacao: $scope.escolhaObjOperacao.value, funcaoZ: $scope.tabela, restricoes: $scope.tabelaRestricoes, qtdIteracao: qdtMaxIter});
       }
