@@ -125,6 +125,20 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
       return 0;
     }
   };//fim expCorrect
+
+  function LadoDireitoNegativo(restri) {
+    for(var h = 0; h < restri.length; h++) {
+      //verifico se o valor de B é negativo
+      if( Math.sign(restri[h][restri[h].length-1].valorB) == -1 ) {
+        for(var i = 0; i < restri[h].length-1; i++) {
+          restri[h][i].valor *= -1;
+        }
+        restri[h][restri[h].length-1].valorB *= -1;
+      }
+    };
+
+  }//fim LadoDireitoNegativo
+
   //=============================== fim das funcoes estaticas =============================================
 
   //======== funcoes do scope =======================================================================
@@ -176,8 +190,8 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
         //reparto todo string em um array dos elemento exemplo 12x2 isso é um elemento ultimo elemento é sempre 
         //>12 ou <34 ou =65  ou tudos numeros com virgulas
-        _auxR = restri[i].match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+|\>[0-9]+,[0-9]+|\<[0-9]+,[0-9]+|=[0-9]+,[0-9]+|\>[0-9]+|\<[0-9]+|=[0-9]+/gi)
-        
+        _auxR = restri[i].match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+|\>-?[0-9]+,[0-9]+|\<-?[0-9]+,[0-9]+|=-?[0-9]+,[0-9]+|\>-?[0-9]+|\<-?[0-9]+|=-?[0-9]+/gi)
+        console.log(_auxR)
         //esse for é para cada restricao
         for(var j=0; j < _auxR.length -1; j++){
 
@@ -203,6 +217,9 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
         $scope.tabelaRestricoes[i].push(_auxB);
       }
       console.log($scope.tabelaRestricoes)
+
+      LadoDireitoNegativo($scope.tabelaRestricoes);
+
 
       if(erro != 1) {
         //se estiver tudo certo e acessar essas parte unica forma de não passar para proxima pagina é causando erro então

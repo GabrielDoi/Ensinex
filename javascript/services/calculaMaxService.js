@@ -169,9 +169,9 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 				}
 
 				console.log("variaveis Não Basicas")
-				for(var i=1, j=0; i< nXisEfs.length-1; i++){
+				for(var i=1; i< nXisEfs.length-1; i++){
 					var achou = 0;
-					for( ;j < qtdeLinhas; j++) {
+					for(var j=0 ;j < qtdeLinhas; j++) {
 						if(nXisEfs[i] == tabela[j][0]){
 							achou = 1;
 							//console.log(nXisEfs[i]+" : 0")

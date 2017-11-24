@@ -22,16 +22,17 @@
 				  </tbody>
 			</table>
 
-			<blockquote class="blockquote">
-			  <p class="mb-0">Passo a Passo:</p>
-			  <p class="lead">{{matrizTabela.mensagem}}</p>
-			</blockquote>
-
 			<div class="d-flex justify-content-around">
 			  <div class="p-2"><button class="btn btn-warning" ng-click="passoAnterior()">Passo Anterior</button></div>
 			  <div class="p-2"><button class="btn btn-danger" ui-sref="#">Pagina Inicial</button></div>
 			  <div class="p-2"><button class="btn btn-primary" ng-click="proximoPasso()">Proximo Passo</button></div>
 			</div>
+
+			<blockquote class="blockquote">
+			  <p class="mb-0">Passo a Passo:</p>
+			  <p class="lead">{{matrizTabela.mensagem}}</p>
+			</blockquote>
+
 
 			<blockquote class="blockquote">
 				<div ng-if="estaUltimoEstado">

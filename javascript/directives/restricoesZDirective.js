@@ -26,6 +26,8 @@ angular.module("ensinex").directive("restricoesZ", ["funcaoZAPI", function(funca
 
 				var _estado6 = /^>$|^<$|^=$/;
 
+				var _estado4 = /^-$/;
+
 
 				switch(funcaoZAPI.getEstado(scope.$eval(attrs.funcIndex))) {
 
@@ -157,8 +159,15 @@ angular.module("ensinex").directive("restricoesZ", ["funcaoZAPI", function(funca
 					case 6: {
 						//verifica se nao é numero
 						if(!_estado0.test(_funcExp)){
-							//quer dizer que nao é entao apaga caracter digitado
-							exp = exp.substring(0, exp.length - 1);
+							//quer dizer que nao é entao verifica se nao é negotivo -
+							if(!_estado4.test(_funcExp)){
+								//quer dizer que nao é entao apaga caracter digitado
+								exp = exp.substring(0, exp.length - 1);
+							}else{
+								//quer dizer que é garantido numeros negotivos entao vai para estado 7 
+								funcaoZAPI.setEstado(7, scope.$eval(attrs.funcIndex));
+								funcaoZAPI.addArmazenaEstados(7, scope.$eval(attrs.funcIndex));
+							}
 						}else{
 							//quer dizer que é garantindo numero depois do > ou < ou = entao vai para estado 7
 							funcaoZAPI.setEstado(7, scope.$eval(attrs.funcIndex));
