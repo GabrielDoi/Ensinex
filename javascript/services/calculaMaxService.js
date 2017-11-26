@@ -15,7 +15,7 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 	// var iteracao = 1;
 
 	//função que calcula o MAX
-	var _calculaMax = function(tabela, qtdeVariaveis, qtdeRestricoes, qtdMaxIteracao, nXisEfs) {
+	var _calculaMax = function(op, tabela, qtdeVariaveis, qtdeRestricoes, qtdMaxIteracao, nXisEfs) {
 		//criando uma novo vetor
 		var listaDeEstados = vetorList.criarVetorList();
 
@@ -39,7 +39,7 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 			//aqui ele verifica quem é o menor na funcao Z 
 			//e adiciona o xis da coluna na variavel entra 
 			//e o valor da funcao Z na variavel menor
-			for(var i=1; i <= qtdeVariaveis ; i++){
+			for(var i=1; i <= qtdeVariaveis + qtdeRestricoes ; i++){
 				if (tabela[qtdeRestricoes][i] < menor){
 					entra = i;
 					menor = tabela[qtdeRestricoes][i];
@@ -56,6 +56,7 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 			
 			for (var i=0 ; i<qtdeRestricoes;i++){
 				if(tabela[i][entra]  != 0){
+					// console.log(tabela[i])
 					var aux = tabela[i][qtdeColunas-1] / tabela[i][entra];
 					if(primeiro){
 						menor = aux;
@@ -63,7 +64,7 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 						primeiro = false;
 					}
 					else{
-						if(aux < menor){
+						if(aux < menor && aux > 0){
 							menor = aux;
 							sai = i;
 						}
@@ -130,7 +131,7 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 			
 			//verifica se tem proxima iteração
 			var continua=false;
-			for(var i=1; i<=qtdeVariaveis ; i++){
+			for(var i=1; i <= qtdeVariaveis + qtdeRestricoes; i++){
 				if(tabela[qtdeLinhas-1][i] < 0){
 					continua = true;
 					//adicionando estado de que ainda tem valores negativos entao continua com proxima iteracao
@@ -165,7 +166,11 @@ angular.module("ensinex").factory("calculaMaxAPI", ["vetorList", function(vetorL
 				console.log("variaveis Basicas")
 				for(var i=0; i< qtdeLinhas; i++){
 					console.log(tabela[i][0]+" : "+tabela[i][qtdeColunas-1]);
-					solucaoFinalBasica.push(tabela[i][0]+" : "+tabela[i][qtdeColunas-1])
+					if(op == 1 && tabela[i][0] == "Z"){
+						solucaoFinalBasica.push(tabela[i][0]+" : "+(tabela[i][qtdeColunas-1] * -1))
+					}else{
+						solucaoFinalBasica.push(tabela[i][0]+" : "+tabela[i][qtdeColunas-1])
+					}
 				}
 
 				console.log("variaveis Não Basicas")

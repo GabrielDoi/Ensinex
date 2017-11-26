@@ -20,11 +20,12 @@
 			<blockquote class="blockquote text-center" ng-repeat="ret in restricoes">
 			  <div class="mb-0">
 			  	<a ng-repeat="fun in ret">{{testeSinal(fun.valor, $index)}}{{fun.valor}}&nbsp;{{fun.xis}}</a>
-			  	<a ng-if="ret[ret.length-1].operador == '>'">- 1 F{{$index+1}}</a>
-			  	<a ng-if="ret[ret.length-1].operador != '>'">+ 1 F{{$index+1}}</a>
+			  	<a ng-if="ret[ret.length-1].operador == '>'">- 1 E{{$index+1}} + 1 A{{$index+1}}</a>
+			  	<a ng-if="ret[ret.length-1].operador == '<'">+ 1 F{{$index+1}}</a>
+			  	<a ng-if="ret[ret.length-1].operador == '='">+ 1 A{{$index+1}}</a>
 			  	<a>=&nbsp;{{ret[ret.length-1].valorB}}</a>
 			  </div>
-			  <footer class="blockquote-footer">Adicionamos Para Cada Restrição uma Variavel de Folga que chamamos de F{{$index+1}}</footer>
+			  <footer class="blockquote-footer">Adicionamos Para esta Restrição uma Variavel <a ng-if="ret[ret.length-1].operador == '>'">de Excesso que chamamos de E{{$index+1}} e uma Variavel Artificial que chamamos de A{{$index+1}}</a><a ng-if="ret[ret.length-1].operador == '<'">de Folga que chamamos de F{{$index+1}}</a><a ng-if="ret[ret.length-1].operador == '='">Artificial que chamamos de A{{$index+1}}</a></footer>
 			</blockquote>
 			
 			<div class="d-flex justify-content-around">

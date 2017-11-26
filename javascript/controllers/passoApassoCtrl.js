@@ -30,13 +30,13 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 
 	//========================== funcoes estaticas  =========================================================
 
-	function criaXisEfs(fun, qtdRes) {
-
+	function criaXisEfs(fun, rest, qtdRes) {
+		
 		//adiciono no primeiro elemento a BASE
 		_xisEfs.push("BASE");
 
 		//for vai percorrer todos elementos do meu array de funcao mais os fs que são qtdRestricoes
-		for(var i = 0; i < fun.length + qtdRes; i++) {
+		for(var i = 0; i < fun.length + rest.length ; i++) {
 
 			//se o i for maior que numero de elementos na funcao ele grava os Fs
 			if(i < fun.length){
@@ -45,7 +45,18 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 			}else{
 				//aqui o i ja é maior entao quer dizer que ja acabou toda minha funcao grava os Fs
 				//Fs são sempre o i menos a total da funcao para comesar com 1,2,3...
-				_xisEfs.push("F"+ ((1+i) - fun.length));
+				//verifico se operador é > para gravar E de excesso e A de artificial
+				console.log(i - fun.length)
+				if(rest[i - fun.length][rest[i- fun.length].length -1].operador == ">"){
+					_xisEfs.push("E"+ ((1+i) - fun.length));
+					_xisEfs.push("A"+ ((1+i) - fun.length));
+				}else{
+					if(rest[i - fun.length][rest[i - fun.length].length -1].operador == "="){
+						_xisEfs.push("A"+ ((1+i) - fun.length));
+					}else{
+						_xisEfs.push("F"+ ((1+i) - fun.length));
+					}
+				}
 			}
 		}
 
@@ -69,6 +80,20 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 	};
 
 	$scope.tabelaDosCalculos = function(obj, func, restri, direta) {
+		//auxiliar para adicionar funcoes que contem 2 variaveis
+		var _duasVariaveis = 0;
+
+		//verifico em todas as restricoes se existe um operador assim >
+		for(var g=0; g < restri.length; g++){
+			//verifico se é operador > unico que contem duas variaveis
+			if(restri[g][restri[g].length -1].operador == ">"){
+				_duasVariaveis++;
+			}
+		}
+
+		//cria os xis e os fs
+		criaXisEfs(func, restri, _duasVariaveis);
+
 		//OBJ vou usar depois para verificar se é maximizar ou minimozar 
 		//ate agora vamos fazer so o max
 
@@ -79,13 +104,20 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 			//quer dizer que estamos adicionado uma nova linha na matriz
 			_tabela.push([]);
 
-			//adiciona o nome da funcao no primeiro elemento da matriz tabela
-			_tabela[i].push("F"+(i+1));
+			if(restri[i][restri[i].length -1].operador == "<") {
+				//adiciona o nome da funcao no primeiro elemento da matriz tabela
+				//se for < adiciona F de folga
+				_tabela[i].push("F"+(i+1));
+			}else{
+				//adiciona o nome da funcao no primeiro elemento da matriz tabela 
+				//se for operador de > ou = adiciona A de artificial
+				_tabela[i].push("A"+(i+1));
+			}
 
 			//segundo for é para as colunas 
 			//são formadas seguindo total de variveis de decissão + total de restricoes para forma os F
 			//como total de variaveis de decisão é o tamanho do array func entao
-			for(var j = 0 ; j < func.length + restri.length ; j++) {
+			for(var j = 0 ; j < func.length + restri.length + _duasVariaveis ; j++) {
 
 				//verifica se ja acabou as colunas dos valores de x
 				//como todos os x são todas variaveis de decisao e todas variaveis são tamanho do array func entao
@@ -122,7 +154,11 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 							_tabela[i].push(1);
 						}
 					}else{
-						_tabela[i].push(0);
+						if( restri[i][restri[i].length -1].operador == ">" && _xisEfs[j+1] == ("A"+(i+1)) ){
+							_tabela[i].push(1);
+						}else{
+							_tabela[i].push(0);
+						}
 					}
 				}
 			}//fim do for
@@ -142,7 +178,7 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 
 		//esse for é para toda a linha incluindo o ultimo valor que é o B
 		//por isso vai toda restricao + todas variaveis + 1 que é o B
-		for(var i = 0; i < restri.length + func.length + 1; i++){
+		for(var i = 0; i < restri.length + func.length + 1 + _duasVariaveis; i++){
 
 			//verifico se ja acacou todas variaveis da minha funcao
 			//caso ja tenha acabado todos os valores da minha funcao adiciono os 0 nas outras casas da matriz tabela
@@ -154,19 +190,19 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 			}
 		}//fim do ultimo for
 
-		console.log(_tabela)
+		console.log(_xisEfs)
+		console.log(angular.copy(_tabela))
+		// console.log(_tabela)
 
-		//cria os xis e os fs
-		criaXisEfs(func, restri.length);
 
 		//verifica qual Objetivo maximizar ou minimizar
-		if(obj == 0){
+		// if(obj == 0){
 			//se 0 é porque é MAXIMIZAR
 			//libera acesso para poder ir para proxima pagiga
       		acessoLiberadoAPI.setLiberado();
 
       		//calcular Funcao MAX aqui parametros tabela, qtdVariaveis, qtdRestricoes, qtdIteracao, xisEfs
-      		var _resultado = calculaMaxAPI.calcular(_tabela, func.length, restri.length, qtdIter, _xisEfs);
+      		var _resultado = calculaMaxAPI.calcular(obj, _tabela, func.length, restri.length, qtdIter, _xisEfs);
 
       		if(direta){
       			return _resultado;
@@ -175,15 +211,15 @@ angular.module("ensinex").controller("passoApassoCtrl", ["$scope", "acessoLibera
 				//{tabela: _tabela, qtdVariaveis: func.length, qtdRestricoes: restri.length, xisEfs: _xisEfs, qtdIteracao: qtdIter}
 				$state.go("calculamax", {resultadoMax: _resultado, xisEfs: _xisEfs});
 			}
-		}else{
-			if(obj == 1){
-				//se 1 é porque é MINIMIZAR
+		// }else{
+			// if(obj == 1){
+			// 	//se 1 é porque é MINIMIZAR
 
-			}else{
-				//se for outra coisa é porque deu erro em algum lugar entao nao faz nada e apresenta msg
-				console.log("Objetivo max ou min fora dos parametros");
-			}
-		}
+			// }else{
+			// 	//se for outra coisa é porque deu erro em algum lugar entao nao faz nada e apresenta msg
+			// 	console.log("Objetivo max ou min fora dos parametros");
+			// }
+		// }
 	};//fim tabela dos calculos
 
 	$scope.solucaoDireta = function(obj, func, restri) {

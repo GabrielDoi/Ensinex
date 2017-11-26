@@ -7,7 +7,7 @@
       <div class="input-group">
         <select class="custom-select" ng-options="item.name for item in objOperacao" ng-model="escolhaObjOperacao"></select>
         <label class="my-text">&nbsp; Z = &nbsp;</label>
-        <input class="form-control" type="text" ng-model="funcaoZ" placeholder="Exemplo:  2X1 + 23X2 - 10X3" funcao-z func-index="0">
+        <input class="form-control" type="text" ng-model="funcaoZ" placeholder="Exemplo:  2X1 + 23X2 - 10X3" funcao-z func-index="0" id="focusZ">
       </div>
 
       <p class="lead" style="margin-top: 20px;">Adicione as Restrições</p>
@@ -18,7 +18,7 @@
 
       <div class="input-group regra" ng-repeat="regra in restricoes track by $index">
         <label class="my-text">{{$index + 1}}º&nbsp;</label>
-        <input class="form-control" type="text" ng-model="restricoes[$index]" placeholder="Exemplo:  X1 + 5X2 <= 100" restricoes-z func-index="{{$index + 1}}">
+        <input id="focusR{{$index}}" class="form-control" type="text" ng-model="restricoes[$index]" placeholder="Exemplo:  X1 + 5X2 <= 100" restricoes-z func-index="{{$index + 1}}">
       </div>
 
       <div align="center" style="margin-top: 2px;">
@@ -26,7 +26,7 @@
       </div>
 
     
-      <input class="form-control" type="number" placeholder="Digite Quantidade Maxima de Iterações" style="margin-top: 20px;" ng-model="qdtMaxIteracao" required>
+      <input id="focusI" class="form-control" type="number" placeholder="Digite Quantidade Maxima de Iterações" style="margin-top: 20px;" ng-model="qdtMaxIteracao" required>
       
 
       <button type="button" class="btn btn-primary my-btn" ng-click="gerarTabela(escolhaObjOperacao.value, funcaoZ, restricoes, qdtMaxIteracao)">Proximo Passo</button>

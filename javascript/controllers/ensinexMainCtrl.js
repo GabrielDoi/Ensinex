@@ -1,4 +1,4 @@
-angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", "gravarFuncaoAPI", function($scope, funcaoZAPI, acessoLiberadoAPI, $state, gravarFuncaoAPI) {
+angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI", "acessoLiberadoAPI", "$state", "gravarFuncaoAPI", "$window", function($scope, funcaoZAPI, acessoLiberadoAPI, $state, gravarFuncaoAPI, $window) {
 	console.log("ensinexMainCtrl");
 
   /*
@@ -28,6 +28,8 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
   //==================================variaveis==========================================================
 
+  $scope.funcaoZ = "";
+  
   //operacao objetivo da funcao se maximizar ou minimizar usa value para saber qual dos index do array escolher
   $scope.objOperacao  = [
     {name:"Maximizar", value:0},
@@ -107,7 +109,7 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
   //funcao que verifica se todas as expressoes estao corretas retorna -1 se estiver tudo certo ou numero da funcao que esta errada
   //retorna -2 se nao tiver nem uma restricao 
-  function expCorrect() {
+  function expCorrect(iteracao) {
     var _auxFunc = funcaoZAPI.getTodoEstado(); // array de todas as expresoes em ordem numerica 
     //posicao 0 é da funcao z entao é a unica que estado final é 5 apenas 5
     if(_auxFunc[0] == 5){
@@ -117,7 +119,13 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
             return i;
           }
         }
-        return -1;
+        if( iteracao <= 0 || iteracao == undefined ) {
+          //aqui verifica se tem digito na iteracao
+          return -3
+        }else{
+          //aqui retorna tudo certo
+          return -1;
+        }
       }else{
         return -2;
       }
@@ -139,6 +147,12 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
   }//fim LadoDireitoNegativo
 
+  function funcaoMinimizar(fun) {
+    for(var i = 0; i < fun.length; i++){
+      fun[i].valor *= -1;
+    }
+  }//fim da funcaoMinimizar
+
   //=============================== fim das funcoes estaticas =============================================
 
   //======== funcoes do scope =======================================================================
@@ -154,19 +168,24 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
     //aqui verifico se esta tudo certo
     //se nao causa msg de erro no else
-    var _correct = expCorrect();
+    var _correct = expCorrect(qdtMaxIter);
     //verifica se todas as expressoes estao corretas tudo estiver correto tem que ser -1
     if(_correct == -1){
 
       //reparte a string da funcao em um array dos elemento exemplo 12x2 isso é um elemento
       var _auxF = fun.match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+/gi);
-
+      console.log(_auxF)
       //esse for é para o array dos elemento de cima
       for(var i=0; i < _auxF.length; i++){
         //adiciona na variavel um objeto contendo valor e o xis de cada elemento
         $scope.tabela.push( expValor(false, _auxF[i]) );
       }
       console.log($scope.tabela);
+
+      if(obj == 1){
+        funcaoMinimizar($scope.tabela)
+      }
+
 //=================== ate aqui é parte da funcao Z daki para baixo é das restricoes====================================
       
       //aqui sao variaveis auxiliares uma para restricao outra para gravar o B das restricoes
@@ -178,7 +197,7 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
       //nesse for percorro as casas do meu array de restricoes em outras palavras
       //vou em cada restricao existente 1,2,3... restricoes e optenho sua expressao
-      for(var i=0; i < restri.length; i++){
+      outerloop: for(var i=0; i < restri.length; i++){
         //inizializa variavel vazia
         _auxB = {
           operador: "",
@@ -190,7 +209,7 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
 
         //reparto todo string em um array dos elemento exemplo 12x2 isso é um elemento ultimo elemento é sempre 
         //>12 ou <34 ou =65  ou tudos numeros com virgulas
-        _auxR = restri[i].match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+|\>-?[0-9]+,[0-9]+|\<-?[0-9]+,[0-9]+|=-?[0-9]+,[0-9]+|\>-?[0-9]+|\<-?[0-9]+|=-?[0-9]+/gi)
+        _auxR = restri[i].match(/-?[0-9]+x[0-9]+|-?x[0-9]+|-?[0-9]+,[0-9]+x[0-9]+|\>=?-?[0-9]+,[0-9]+|\<=?-?[0-9]+,[0-9]+|=-?[0-9]+,[0-9]+|\>=?-?[0-9]+|\<=?-?[0-9]+|=-?[0-9]+/gi)
         console.log(_auxR)
         //esse for é para cada restricao
         for(var j=0; j < _auxR.length -1; j++){
@@ -198,30 +217,37 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
           retornoExpValor = expValor(true, _auxR[j]);
 
           if(retornoExpValor == -1) {
-            alert("Existe nome de Variavel X nas restrições que são diferentes da Função !!!");
-            console.log("Existe nome de Variavel X nas restrições que são diferentes da Função !!!");
+            $window.document.getElementById('focusR'+i).focus();
+
+            alert("Existe nome de Variavel X nas restrições "+(i+1)+" que são diferentes da Função !!!");
+            console.log("Existe nome de Variavel X nas restrições "+(i+1)+" que são diferentes da Função !!!");
             erro = 1;
+
+            break outerloop; // sai do primeiro for la em cima isso chama javascript label   muito legalll !! :D
           }else{
             //adiciono restricao como objeto com valor e xis
             $scope.tabelaRestricoes[i].push( retornoExpValor );
           }
         }
 
-        //ultimo valor é sempre os operadores > < = seguidos de numeros
-        _auxB.operador = _auxR[_auxR.length-1][0];
+        if(erro != 1) {
+          //ultimo valor é sempre os operadores > < = seguidos de numeros
+          _auxB.operador = _auxR[_auxR.length-1][0];
 
-        //aqui trasformo o valor que vem de string em float para calculos
-        _auxB.valorB = parseFloat(_auxR[_auxR.length-1].substring(1).replace(",", "."));
+          //aqui trasformo o valor que vem de string em float para calculos
+          _auxB.valorB = _auxR[_auxR.length-1][1] == "=" ? parseFloat(_auxR[_auxR.length-1].substring(2).replace(",", ".")) : parseFloat(_auxR[_auxR.length-1].substring(1).replace(",", "."));
 
-        //adiciono na ultima posicao das restricoes
-        $scope.tabelaRestricoes[i].push(_auxB);
+          //adiciono na ultima posicao das restricoes
+          $scope.tabelaRestricoes[i].push(_auxB);
+        }
       }
       console.log($scope.tabelaRestricoes)
 
-      LadoDireitoNegativo($scope.tabelaRestricoes);
-
 
       if(erro != 1) {
+        //multiplica por -1 se o valor de b for negativo 
+        LadoDireitoNegativo($scope.tabelaRestricoes);
+
         //se estiver tudo certo e acessar essas parte unica forma de não passar para proxima pagina é causando erro então
         //uma vez estando tudo certo então zera todo os estado para se voltar essa pagina sistema calcular novamente os valores
         funcaoZAPI.removeTodoEstado();
@@ -239,15 +265,27 @@ angular.module("ensinex").controller("ensinexMainCtrl", ["$scope", "funcaoZAPI",
     }else{
       //caso nao esteja coreto as expresoes 
       if(_correct == 0){
+        $window.document.getElementById('focusZ').focus();
+        alert("A funcao Z esta Errada !!")
         console.log("A funcao Z esta Errada !!");
         acessoLiberadoAPI.blockLiberado();
       }else{
         if(_correct == -2){
+          alert("Não Existe Restrições !!")
           console.log("Não Existe Restrições !!");
           acessoLiberadoAPI.blockLiberado();
         }else{
-          console.log("A Restrição "+_correct+" Esta Errada !!");
-          acessoLiberadoAPI.blockLiberado();
+          if(_correct == -3 ){
+            $window.document.getElementById('focusI').focus();
+            alert("Quantidade Maxima de iteração esta errada!");
+            console.log("Quantidade Maxima de iteração esta errada!");
+            acessoLiberadoAPI.blockLiberado();
+          }else {
+            $window.document.getElementById('focusR'+(_correct-1)).focus();
+            alert("A Restrição "+_correct+" Esta Errada !!")
+            console.log("A Restrição "+_correct+" Esta Errada !!");
+            acessoLiberadoAPI.blockLiberado();
+          }
         }
       }
     }

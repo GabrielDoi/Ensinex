@@ -50,7 +50,7 @@ angular.module("ensinex").factory("funcaoZAPI", function() {
 	var _armazenaEstados = [[0]];
 
 	//variavel armazena a string atual
-	var _expressao = [""];
+	var _expressao = [];
 
 	//funcoe responsavel por gerenciamento dos arrays dentro do controle da pagina
 	var _addVariaveis = function() {
