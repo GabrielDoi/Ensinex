@@ -3,7 +3,7 @@ Trabalho Pesquisa Operacional com função Simples
 Nome							| RA
 ------------------------------	|--------
 Gabriel Doi  	| 548472
-João Pedro		| 
+João Pedro		| 548537
 
 Projeto de Pesquisa Operacional
 BCC UNIVEM
