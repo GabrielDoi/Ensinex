@@ -1,5 +1,7 @@
 # Ensinex
 Trabalho Pesquisa Operacional com função Simples
+
+
 Nome							| RA
 ------------------------------	|--------
 Gabriel Doi  	| 548472
